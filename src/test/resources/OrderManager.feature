@@ -251,14 +251,17 @@ Feature: Order Manager
 
   Scenario: 商户赎回先冲抵之前净申购，再冲抵头寸，最后挂起
     Given 用户 account1 Invest 1300 份额
+    # 剩余1000头寸 1300净申 0在途
     And 用户 account1 QRedeem 300 份额
     Then 用户 account1 有 Open Redeem 订单 300 份
     And 用户 account1 有 Open Invest 订单 1300 份
+    # 剩余1000头寸 1000净申 0在途
     When 用户 account1 QRedeem 1400 份额
     Then 用户 account1 有 Open Redeem 订单 1000 份
     And 用户 account1 有 Completed Sell 订单 400 份
     And 用户 00 有 Completed Buy 订单 400 份
     And 用户 00 有 Open Redeem 订单 400 份
+    # 剩余600头寸 0净申 0在途
     When 用户 account1 Invest 700 份额
     And 完成轧差 300
     # 剩余600头寸 0净申 700在途
@@ -267,6 +270,7 @@ Feature: Order Manager
     And 用户 00 有 Completed Buy 订单 600 份
     And 用户 00 有 Open Redeem 订单 600 份
     And 用户 account1 有 PendingRedeem QRedeem 订单 500 份
+    # 剩余0头寸 0净申 700在途，500挂起
     And 完成轧差 -600
     When 基金确认订单总额 -300, 平台总份额 2703
     Then 用户 account1 有 Long 头寸 700 份
@@ -280,15 +284,18 @@ Feature: Order Manager
 
   Scenario: 商户赎回超过头寸 + 未轧差净申 + 在途申购时失败
     Given 用户 account1 Invest 1300 份额
+    # 剩余1000头寸 1300净申 0在途
     And 用户 account1 QRedeem 300 份额
     Then 用户 account1 有 Open Redeem 订单 300 份
     And 用户 account1 有 Open Invest 订单 1300 份
+    # 剩余1000头寸 1000净申 0在途
     And 用户 account1 无法赎回 2100 份
     When 用户 account1 QRedeem 1400 份额
     Then 用户 account1 有 Open Redeem 订单 1000 份
     And 用户 account1 有 Completed Sell 订单 400 份
     And 用户 00 有 Completed Buy 订单 400 份
     And 用户 00 有 Open Redeem 订单 400 份
+    # 剩余600头寸 0净申 0在途
     When 用户 account1 Invest 700 份额
     And 完成轧差 300
     # 剩余600头寸 0净申 700在途
@@ -297,6 +304,7 @@ Feature: Order Manager
     And 用户 00 有 Completed Buy 订单 600 份
     And 用户 00 有 Open Redeem 订单 600 份
     And 用户 account1 有 PendingRedeem QRedeem 订单 500 份
+    # 剩余0头寸 0净申 700在途，500挂起
     And 完成轧差 -600
     When 基金确认订单总额 -300, 平台总份额 2703
     Then 用户 account1 有 Long 头寸 700 份
