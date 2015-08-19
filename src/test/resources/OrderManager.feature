@@ -282,7 +282,7 @@ Feature: Order Manager
     And 用户 account3 有 Dividend 头寸 1 份
     And 用户 00 有 Dividend 头寸 1 份
 
-  Scenario: 商户赎回超过头寸 + 未轧差净申 + 在途申购时失败
+  Scenario: 商户赎回超过头寸 + 未轧差净申 + 在途申购 + 挂起赎回时失败
     Given 用户 account1 Invest 1300 份额
     # 剩余1000头寸 1300净申 0在途
     And 用户 account1 QRedeem 300 份额
@@ -315,3 +315,15 @@ Feature: Order Manager
     And 用户 account2 有 Dividend 头寸 1 份
     And 用户 account3 有 Dividend 头寸 1 份
     And 用户 00 有 Dividend 头寸 1 份
+    # 检查挂起头寸影响赎回，此时500赎回挂起，700头寸
+    And 用户 account1 无法赎回 300 份
+    When 用户 account1 Invest 1700 份额
+    # 500赎回挂起，700头寸，1700净申
+    Then 用户 account1 无法赎回 2000 份
+    When 用户 account1 QRedeem 1900 份额
+    Then 用户 account1 有 Open Redeem 订单 1700 份
+    And 用户 account1 有 Completed Sell 订单 200 份
+    And 用户 00 有 Completed Buy 订单 200 份
+    And 用户 00 有 Open Redeem 订单 200 份
+
+
