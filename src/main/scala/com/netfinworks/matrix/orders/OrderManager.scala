@@ -82,7 +82,7 @@ class OrderManager extends Actor {
         ord => ord.account == o.account
           && ord.orderType == QRedeem || ord.orderType == Redeem
           && ord.productId == o.productId
-          && ord.status == PendingRec)
+          && ord.status == PendingRedeem)
         .foldRight(BigDecimal(0)) { (o, sum) =>
         if (o.orderType == Invest) sum + o.quantity else sum - o.quantity
       }
